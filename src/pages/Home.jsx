@@ -1,5 +1,7 @@
 
 import PostList from '../components/PostList';
+
+
 import { ReactForms } from '../pages/ReactForms';
 
 import { FormCreatePost1 } from '../pages/FormCreatePost1';
@@ -14,11 +16,8 @@ function Home() {
             <nav>
                 <Link to='/create'>create post</Link>
             </nav>
-
             {/*   <ReactForms /> */}
-
             {/*  <FormCreatePost1 /> */}
-
             <PostList />
         </div>
     );

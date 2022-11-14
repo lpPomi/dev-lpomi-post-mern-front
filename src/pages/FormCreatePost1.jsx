@@ -1,8 +1,6 @@
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-//import * as yup from "yup";
-
 
 import { useState } from 'react';
 import Global from '../Global';
@@ -136,12 +134,12 @@ export const FormCreatePost1 = () => {
                        }
                    } */
 
-                // setPostSaved(true);
+                setPostSaved(true);
                 /* clear the fields nombre, apellidos, description */
                 setTitle('');
                 setDescription('');
 
-                navigate('/home');
+                /*    navigate('/home'); */
             }
             catch (error) {
                 console.error(error);
@@ -154,7 +152,7 @@ export const FormCreatePost1 = () => {
     return (
         <div>
 
-            {/*        if only post was saved sussessful then redirect to home */}
+
 
 
             {/*        if the post & the image was saved sussessful then redirect to blog */}
@@ -181,14 +179,19 @@ export const FormCreatePost1 = () => {
     /> */}
 
 
-            {/*  {
+            {/*        if only post was saved sussessful then redirect to home */}
+            {
                 postSaved && (
                     <div>
                         <Navigate to='/home' />
                     </div>
                 )
             }
- */}
+
+
+
+
+
 
 
             <div className='text-2xl flex justify-center '>Create post</div>

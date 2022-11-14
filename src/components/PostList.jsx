@@ -5,7 +5,15 @@ import { useState, useEffect } from 'react';
 // to use the specifics urls
 import Global from '../Global';
 
+// react icons https://react-icons.github.io/react-icons/
 import { VscEmptyWindow } from "react-icons/vsc";
+
+import { PostCard } from './PostCard';
+
+
+// Attention we pass here the post object to the PostCard component
+// in the map function we call the PostCard component and pass the posts object to the  PostCard
+
 
 function PostList() {
 
@@ -48,6 +56,8 @@ function PostList() {
             ) */
 
 
+    // in the map function we call the PostCard component and pass the posts object to the  PostCard
+
     return (
 
         <div>
@@ -55,25 +65,33 @@ function PostList() {
                 List Posts
             </div>
 
-            {
-                /* if posts found ! */
-                posts.length >= 1 && (
 
-                    // show ther posts in a JS map function 
-                    posts.map(post => {
-                        return (
-                            <div className='bg-orange-300' key={post._id}>
-                                {post.title} <hr />
-                                {post.description}
-                                <hr />
-                            </div>
-                        );
-                    })
+            <div className="grid grid-cols-3 gap-3">
+                {
+                    /* if posts found ! */
+                    posts.length >= 1 && (
 
-                )
+                        // show the posts in cards in a JS map function  
 
-            }
+                        posts.map(post => (
 
+                            /*         return (
+                                        <div className='bg-orange-300' key={post._id}>
+                                            {post.title} <hr />
+                                            {post.description}
+                                            <hr />
+                                        </div>
+                                    ); */
+
+                            /*  className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 */
+                            // here we show the cards with grids 
+
+                            < PostCard post={post} key={post._id} />
+
+                        ))
+                    )
+                }
+            </div>
 
             {
 
