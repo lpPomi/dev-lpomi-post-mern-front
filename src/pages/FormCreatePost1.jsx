@@ -4,10 +4,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 //import * as yup from "yup";
 
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Global from '../Global';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
+
+import { useNavigate } from 'react-router';
 
 // to use shema validation from yup. Use { .. } because is an export
 import { postSchema } from '../validations/PostValidation';
@@ -50,7 +52,7 @@ export const FormCreatePost1 = () => {
     //var urlPostImage = Global.urlUploadImage;
     /* urlUploadImage: 'http://localhost:3000/api/upload-image/' */
 
-
+    let navigate = useNavigate();
 
     // include the shema with the resolve function in the form
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -58,24 +60,101 @@ export const FormCreatePost1 = () => {
     });
 
     // save all inputs from the form in the data object
-    const onSubmit = (data) => {
-        console.log(data);
+    const onSubmit = (postObj) => {
+
+        // aquivalent to function createPost(postObj) {
+        setPost({
+            title: postObj.title,
+            description: postObj.description,
+        });
+
+        //setPostIsSet(true);
+        //console.log(postObj);
+
+        // call the fucntion savepost(post) {
+        savepost(postObj);
+
     };
 
+    //console.log('Show post array ', post);
+
+
+    function savepost(post) {
+
+        /* 
+           **************************************************************************
+           here we will save the object post and the image into the mongo db server 
+           create a POST verb to store the post object in mongodb 
+           urlBackend: 'http://localhost:3000/api/'
+           **************************************************************************
+        */
+
+        //  console.log('In function savepost  posts: ', posts);
+        //setPostIsSet(false);
+        //console.log('In function savepost postIsSet ', postIsSet);
+
+        // save the post in the backend url:     
+        /*  Attention: we need to call an autoinvocation function to store the post in mongodb */
+        (async () => {
+            try {
+
+                // setPostSaved(false);
+                // console.log('Post now !!! ');
+                const res = await axios.post(urlSavePost, post);
+
+                // console.log('urlSavePost: ', urlSavePost + 'posts');
+                console.log(res.data);
+
+                // search for post id in mongodb for the post just saved
+                // console.log('post id: ', res.data.post._id);
+
+                //console.log('In savepost  file0 ', file0);
+
+                // upload the image file if it exists see: https://surajsharma.net/blog/react-upload-file-using-axios
+
+
+                /*    if (file0 !== null) {
+   
+                       const formData = new FormData();
+                       formData.append("file0", file0);
+                       var postId = res.data.post._id;
+                       //console.log('post Id in file0: ', postId);
+   
+                       try {
+                           const response = await axios({
+                               method: "post",
+                               url: urlPostpostImage + postId,
+                               data: formData,
+                               headers: { "content-Type": "multipart/form-data" },
+                           });
+                           //  console.log('urlUploadImage: ', urlPostpostImage + postId);
+                           console.log(response.data);
+   
+                           setImageSaved(true);
+                       } catch (error) {
+                           console.log(error);
+                       }
+                   } */
+
+                // setPostSaved(true);
+                /* clear the fields nombre, apellidos, description */
+                setTitle('');
+                setDescription('');
+
+                navigate('/home');
+            }
+            catch (error) {
+                console.error(error);
+            }
+        })();  // function autoinvocation 
+
+    };
 
 
     return (
         <div>
 
             {/*        if only post was saved sussessful then redirect to home */}
-            {
-                postSaved && (
-                    <div>
-                        {/*  {console.log('redirect to  home....')} */}
-                        <Navigate to='/home' />
-                    </div>
-                )
-            }
 
 
             {/*        if the post & the image was saved sussessful then redirect to blog */}
@@ -100,6 +179,17 @@ export const FormCreatePost1 = () => {
         title='Create post'
         sizeTitle='slider-small'
     /> */}
+
+
+            {/*  {
+                postSaved && (
+                    <div>
+                        <Navigate to='/home' />
+                    </div>
+                )
+            }
+ */}
+
 
             <div className='text-2xl flex justify-center '>Create post</div>
 

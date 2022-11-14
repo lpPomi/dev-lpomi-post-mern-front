@@ -3,7 +3,7 @@ import Global from '../Global';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 
-// to use shema validation from yup. in {] because is an export
+// to use shema validation from yup. Use { .. } because is an export
 import { postSchema } from '../validations/PostValidation';
 
 

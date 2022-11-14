@@ -2,6 +2,8 @@ import { Route, Routes } from 'react-router-dom';
 
 // import the pages
 import FormCreatePost from '../pages/FormCreatePost';
+
+import { FormCreatePost1 } from '../pages/FormCreatePost1';
 import Home from '../pages/Home';
 import NotFoundPage from '../pages/NotFoundPage';
 
@@ -20,7 +22,7 @@ function Router() {
                 <Routes>
                     <Route path='/' element={<Home />} />
                     <Route path='home' element={<Home />} />
-                    <Route path='create' element={<FormCreatePost />} />
+                    <Route path='create' element={<FormCreatePost1 />} />
                     {/* Route not found 404. Always put it on the end of all router */}
                     <Route path='*' element={<NotFoundPage />} />
                 </Routes>

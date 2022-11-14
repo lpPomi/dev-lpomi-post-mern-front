@@ -17,9 +17,9 @@ function Home() {
 
             {/*   <ReactForms /> */}
 
-            <FormCreatePost1 />
+            {/*  <FormCreatePost1 /> */}
 
-            {/*  <PostList /> */}
+            <PostList />
         </div>
     );
 }
