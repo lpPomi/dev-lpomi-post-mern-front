@@ -3,10 +3,14 @@ import axios from 'axios';
 import Global from '../Global';
 import { useParams } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Children } from 'react';
 import { useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
+import noImage from '../assets/images/icons8-no-image-96.png';
+
+
 //import { Link } from "react-router-dom";
+
 
 
 function PostDetails() {
@@ -33,6 +37,13 @@ function PostDetails() {
   const [postDeleted, setPostDeleted] = useState(false);
 
   var urlDeletePost = Global.urlBackend + 'posts/';
+
+  var urlImg = Global.urlBackend + 'get-image/';
+
+
+
+
+
 
 
   // here with try catch async await and axios with promise
@@ -63,6 +74,7 @@ function PostDetails() {
       try {
         const res = await axios.get(urlGetPost + id);
         //console.log('Get one Post by id in PostDetails', res.data);
+        //console.log('Image ', res.data.image);
         setPost(res.data);
       }
       catch (error) {
@@ -176,7 +188,28 @@ function PostDetails() {
             <div className=" flex justify-center items-center py-4">
 
               <div className=" max-w-md rounded overflow-hidden shadow-lg ">
-                <img className="w-full" src="https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Mountain" />
+                {/*   <img className="w-full" src="https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Mountain" /> */}
+
+
+                <div >
+                  {/* <img src="https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Paisaje" /> */}
+
+
+                  {post.image !== undefined ?
+                    (
+                      <div>
+                        < img className="w-full" src={urlImg + post._id} alt={post.image} />
+                      </div>
+                    ) :
+                    (
+                      <div>
+                        <img className="w-full" src={noImage} alt='no image' />
+
+                      </div>
+                    )
+                  }
+                </div>
+
 
                 <div className="px-6 py-4 bg  bg-gray-300" >
                   <div className="font-bold text-xl mb-2">Title</div>

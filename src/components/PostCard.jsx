@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 
+import Global from '../Global';
 
 // ***********************
 // Show all Posts in Cards 
@@ -7,6 +8,9 @@ import { Link } from "react-router-dom";
 
 /* export function PostCard({ post }) { */
 export const PostCard = ({ post }) => {
+
+
+  var urlImg = Global.urlBackend + 'get-image/';
 
 
   return (
@@ -28,6 +32,10 @@ export const PostCard = ({ post }) => {
 
         <div className="text-1xl">
           {post.description}
+
+        </div>
+        <div className="container  mx-auto  object-contain h-40 w-40">
+          {post.image && <img src={urlImg + post._id} />}
         </div>
 
       </div>

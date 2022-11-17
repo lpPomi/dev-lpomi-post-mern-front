@@ -64,7 +64,7 @@ function PostList() {
 
     <div>
       <div className='text-2xl mt-4 mb-4 bg-green-500  rounded-sm shadow-md shadow-black '>
-        List Posts
+        List Posts [{posts.length}]
       </div>
 
 
