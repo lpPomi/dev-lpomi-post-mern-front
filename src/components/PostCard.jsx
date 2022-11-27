@@ -9,7 +9,7 @@ import Global from '../Global';
 /* export function PostCard({ post }) { */
 export const PostCard = ({ post }) => {
 
-
+  /* { console.log('In Postcard ', post); } */
   var urlImg = Global.urlBackend + 'get-image/';
 
 

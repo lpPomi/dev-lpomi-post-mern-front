@@ -229,19 +229,21 @@ function PostDetails() {
 
                 <div className="grid grid-cols-3 px-6 pt-4 pb-2 gap-3 bg-gray-300">
 
+
+                  {/* ************** DELETE ************** */}
                   <button className="inline-block  bg-red-300 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mb-2 shadow-md shadow-black hover:bg-red-700" onClick={() => { deletePost(post._id); }}>
                     Delete
                   </button>
 
+                  {/* ************** UPDATE ************** */}
                   <button className="inline-block  bg-green-300 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mb-2 shadow-md shadow-black hover:bg-green-700" onClick={() => navigate(`/update/${post._id}`)}>
                     Update
                     {/*     <nav>
                       <Link to={'/update/' + post._id}>Update</Link>
                     </nav> */}
-
                   </button>
 
-
+                  {/* ************** CANCEL ************** */}
                   <button className="inline-block bg-green-300 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mb-2 shadow-md shadow-black hover:bg-green-700" onClick={() => {
                     setCancleAction(true);
                   }}>

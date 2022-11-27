@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 // to use shema validation from yup. Use { .. } because is an export
 import { postSchema } from '../validations/PostValidation';
 
-
+import { Link } from "react-router-dom";
 import axios from 'axios';
 import Global from '../Global';
 import { useParams } from 'react-router-dom';
@@ -16,7 +16,6 @@ import Swal from 'sweetalert2';
 
 function FormUpdatePost() {
 
-
   //here we get the post id from the URL 
   //const params = useParams();
   //console.log(params);
@@ -25,7 +24,6 @@ function FormUpdatePost() {
   const { id } = useParams();
   //console.log(id);
 
-
   /* useState for one post object.. init value is empty */
   const [post, setPost] = useState([]);
 
@@ -33,6 +31,14 @@ function FormUpdatePost() {
   // here we get the URL http://localhost:3000/api/posts/:id to get one post by id
   var urlGetPost = Global.urlBackend + 'posts/';
 
+  //  urlBackend: 'http://localhost:3000/api/'
+  var urlUpdatePost = Global.urlBackend + 'posts/';
+  var urlDeletePost = Global.urlDelImage;
+  var urlUploadOnlyImage = Global.urlUploadImage;
+
+
+  // this is the object from the image to be uploaded to mongodb
+  const [imageFile, setImageFile] = useState([]);
 
   const [cancleAction, setCancleAction] = useState(false);
 
@@ -42,8 +48,7 @@ function FormUpdatePost() {
     resolver: yupResolver(postSchema),
   });
 
-  //const navigate = useNavigate();
-
+  const navigate = useNavigate();
 
   /*  useState for the title .. init value is empty */
   const [title, setTitle] = useState('');
@@ -52,12 +57,7 @@ function FormUpdatePost() {
   const [description, setDescription] = useState('');
 
 
-  //  urlBackend: 'http://localhost:3000/api/'
-  var urlUpdatePost = Global.urlBackend + 'posts/';
-  //console.log(urlSavePost);
-
   //const [postCopy, setPostCopy] = useState([]);
-
 
   const [postSaved, setPostSaved] = useState(false);
 
@@ -89,14 +89,12 @@ function FormUpdatePost() {
         // console.log('Get one Post by id ', res.data);
         setPost(res.data);
 
-
         // dont needed because we get the original id from the params.....!
         // make a copy ftom the original post object to get the original _id
         // this original id is required for the PUT operation
         //setPostCopy(res.data);
       }
       catch (error) {
-        //console.log('In Error ++++++++');
         console.error(error.message);
         setPost([]);
       }
@@ -104,33 +102,56 @@ function FormUpdatePost() {
   }
 
 
+  // to save the image into the image variable using setImage
+  const getImage = (e) => {
+    setImageFile(e.target.files[0]);
+    //register("image");
+    //console.log('IMAGE ', e.target.files[0]);
+  };
 
 
   // save all inputs from the form in the data object
   const onSubmit = (postObj) => {
 
-
     // aquivalent to function createPost(postObj) {
     setPost({
       title: postObj.title,
       description: postObj.description,
+      // i get here only the FileList and not the File Object
+      // image: postObj.image[0]
     });
-    //setPostIsSet(true);
+    // setPostIsSet(true);
     //console.log(postObj);
 
-    // call the fucntion savepost(post) {
-    updatePost(id, postObj);
+
+    /* 
+    we can use 2 methods
+    *** first
+    updatePost(id, postObj); 
+    
+    here we update the post object and save the image extra
+    
+    *** second
+    we update the post object with image if exists wit an pput command 
+    and if no image was sekected update only Title & Description 
+     */
+
+    // you can choose this method
+    //updatePost(id, postObj);
+
+    // you can choose also this method
+    updateFullPost(id, postObj);
+
 
   };
 
 
 
   /*
-    *****************************************
-    use here the update url and the verb PUT ! 
-    *****************************************
+    ***********************************************
+    use here the update function and the verb PUT ! 
+    ***********************************************
   */
-
   function updatePost(id, post) {
 
     /* 
@@ -141,67 +162,110 @@ function FormUpdatePost() {
        **************************************************************************
     */
 
-    //  console.log('In function updatePost  posts: ', posts);
-    //setPostIsSet(false);
-    //console.log('In function updatePost postIsSet ', postIsSet);
-
-    // save the post in the backend url:     
-    /*  Attention: we need to call an autoinvocation function to store the post in mongodb */
     (async () => {
-      try {
 
-        // setPostSaved(false);
-        //console.log('show id', id);
-        // the id comes from the params.id
+      try {
+        //console.log('i do not have an image');
+        // console.log('id', id);
+        console.log('Post object', post);
+        // save only title & description
+
+
+        // get the image post.image from mongo#
+
+        /* 
+                  const form = new FormData();
+        
+                  // read title & description
+                  for (let key in post) {
+                    form.append(key, post[key]);
+                    //console.log('show the content of keys ', key, post[key]);
+                  }
+                  // read the image object
+                  form.append('image', imageFile);
+        
+        
+                  for (var key of form.entries()) {
+                    console.log('Entries ', key[0] + " --> " + key[1]);
+                  } */
+
+        console.log('Before put axios urlUpdatePost ', urlUpdatePost + id);
+        console.log('ID=', id);
+        //const res = await axios.put(urlPutArticle + 'article/' + articleCopy._id, article);
 
         const res = await axios.put(urlUpdatePost + id, post);
+        console.log('Post Title , Description Saved ', res);
 
-        //const res = await axios.put(urlUpdatePost + postCopy._id, post);
+        // here you have select an Imagefile  
+        //if (post.image.length > 0) {
 
-        //console.log(res);
+        console.log('imageFile  exist ?', imageFile);
 
-        // const res = await axios.post(urlUpdatePost, post);
+        console.log('Stringifi ', JSON.stringify(imageFile));
 
-        // console.log('urlSavePost: ', urlSavePost + 'posts');
-        //console.log(res.data);
+        /*  if imagefile = [ ] object is empty
+            but if imagefile = { } object is not empty
+        */
+        if (JSON.stringify(imageFile) === '{}') {
 
-        // search for post id in mongodb for the post just saved
-        // console.log('post id: ', res.data.post._id);
+          (async () => {
+            console.log('i have additional an image to save');
+            //console.log(urlSavePost);
 
-        //console.log('In savepost  file0 ', file0);
+            /*   console.log('Title', post.title);
+              console.log('description', post.description);
+              console.log('image', post.image.name); */
 
-        // upload the image file if it exists see: https://surajsharma.net/blog/react-upload-file-using-axios
+            const form = new FormData();
+
+            // only update the image !!!!!
+            /* for (let key in post) {
+              form.append(key, post[key]);
+              console.log('show the content of keys ', key, post[key]);
+            } */
+
+            // read the image object
+            form.append('image', imageFile);
+
+            try {
+
+              // delete first the old image
+              const resdelete = await axios.get(urlDeletePost + id);
+              // const resdelete = await axios.post(urlUploadOnlyImage + id);
+              console.log('Deleting the old image from backend ...', resdelete);
 
 
-        /*    if (file0 !== null) {
-   
-               const formData = new FormData();
-               formData.append("file0", file0);
-               var postId = res.data.post._id;
-               //console.log('post Id in file0: ', postId);
-   
-               try {
-                   const response = await axios({
-                       method: "post",
-                       url: urlPostpostImage + postId,
-                       data: formData,
-                       headers: { "content-Type": "multipart/form-data" },
-                   });
-                   //  console.log('urlUploadImage: ', urlPostpostImage + postId);
-                   console.log(response.data);
-   
-                   setImageSaved(true);
-               } catch (error) {
-                   console.log(error);
-               }
-           } */
+              /*   for (var key of form.entries()) {
+                  console.log('Entries ', key[0] + " --> " + key[1]);
+                } */
 
-        //setPostSaved(true);
-        /* clear the fields nombre, apellidos, description */
-        // setTitle('');
-        // setDescription('');
 
-        /*    navigate('/home'); */
+              /* create a new image  */
+              const res = await axios.post(urlUploadOnlyImage + id, form);
+              console.log('Post saved with image ', res);
+
+              //setPostIsSet(true);
+              //setPostSaved(true);
+              /*  const response = await axios.post(urlSavePost, formData, {
+                 headers: { "content-Type": "multipart/form-data" },
+               }); */
+
+              //setImageSaved(true);
+
+              /*   **
+                delete the old image from mongo and backend nodejs server
+                ** 
+              */
+
+
+
+            } catch (error) {
+              console.log(error);
+            }
+          })();  // function autoinvocation 
+
+        }; // end lenght
+
 
         /* sweetalert  */
         Swal.fire(
@@ -210,16 +274,129 @@ function FormUpdatePost() {
           'success'
         );
 
-        setPostSaved(true);
+        //setPostSaved(true);
+        //window.location.reload();
+        navigate('/home');
 
-        setTitle('');
-        setDescription('');
 
-      }
-      catch (error) {
+      } catch (error) {
         console.error(error);
       }
+
     })();  // function autoinvocation 
+
+  };
+
+
+
+  /*
+     ***********************************************
+     use here the update function and the verb PUT ! 
+     ***********************************************
+   */
+  function updateFullPost(id, post) {
+
+    /* 
+       *************************************************
+       here we will update the object post and the image 
+       create a PUT verb to store the post object 
+       urlBackend: 'http://localhost:3000/api/posts/:id'
+       **************************************************
+    */
+
+    if (JSON.stringify(imageFile) === '{}') {
+
+
+      (async () => {
+
+        try {
+
+          console.log('Post object with image', post);
+
+          const form = new FormData();
+
+          // update all fields
+          for (let key in post) {
+            form.append(key, post[key]);
+            console.log('show the content of keys ', key, post[key]);
+          }
+
+          // read the image object
+          form.append('image', imageFile);
+
+          // show all fields
+          for (var key of form.entries()) {
+            console.log('Entries ', key[0] + " --> " + key[1]);
+          }
+
+
+          //  urlBackend: 'http://localhost:3000/api/'
+          // urlUpdatePost = Global.urlBackend + 'posts/';
+
+          const resFull = await axios.put(urlUpdatePost + id, form);
+          console.log('Post Title , Description Saved ', resFull);
+
+
+          /* sweetalert  */
+          Swal.fire(
+            'Article updated!',
+            'success',
+            'success'
+          );
+
+          //setPostSaved(true);
+          //window.location.reload();
+          navigate('/home');
+
+
+        } catch (error) {
+          console.error(error);
+        }
+
+      })();  // function autoinvocation 
+
+    } // end if (JSON.stringify(imageFile) === '{}'
+
+    else {
+      // i have no image selected ... update only Post (title & description)
+
+
+      (async () => {
+
+        try {
+
+          console.log('Post object without image');
+
+          //  urlBackend: 'http://localhost:3000/api/'
+          // urlUpdatePost = Global.urlBackend + 'posts/';
+
+
+          const res = await axios.put(urlUpdatePost + id, post);
+          console.log('Post Title , Description Saved ', res);
+
+
+
+          /* sweetalert  */
+          Swal.fire(
+            'Article updated!',
+            'success',
+            'success'
+          );
+
+          //setPostSaved(true);
+          //window.location.reload();
+          navigate('/home');
+
+
+        } catch (error) {
+          console.error(error);
+        }
+
+      })();  // function autoinvocation 
+
+
+    }
+
   };
 
 
@@ -227,20 +404,15 @@ function FormUpdatePost() {
   return (
 
     <div>
-
-
-
-      {/*        if only article was saved sussessful then redirect to blog */}
+      {/* 
       {
         postSaved && (
           <div>
-            {/*  {console.log('redirect to  blog....')} */}
             <Navigate to='/home' />
           </div>
         )
       }
-
-      {/* query if cancel was set .. then redirect to home */}
+ */}
       {
         cancleAction && (
           <div>
@@ -250,40 +422,37 @@ function FormUpdatePost() {
       }
 
 
-
       <div className='text-2xl flex justify-center '>Update post</div>
 
       <div className="flex justify-center items-center py-4 text-white">
-        {/*  <section> */}
-
 
         <form onSubmit={handleSubmit(onSubmit)}>
 
+          {/* ************** TITLE ************** */}
           <div className='mb-4'>
             <label htmlFor="title">Title</label>
             <input className="px-3 py-2 focus:outline-none rounded bg-gray-600 text-white w-full" type="text" placeholder="set the title" {...register("title")} defaultValue={post.title} />
             <p className="text-sm text-red-500">{errors.title?.message}</p>
           </div>
 
-
+          {/* ************** DESCRIPTION ************** */}
           <div className='mb-4' >
             <label htmlFor="description">Description</label>
-            <input className="px-3 py-2 focus:outline-none rounded bg-gray-600 text-white w-full" type="text" placeholder="set the description" {...register("description")} defaultValue={post.description} />
+            <textarea className="px-3 py-2 focus:outline-none rounded bg-gray-600 text-white w-full" type="text" placeholder="set the description" {...register("description")} defaultValue={post.description} />
             <p className="text-sm text-red-500">{errors.description?.message}</p>
           </div>
 
-          {/* get an image from the local pc. Input type file*/}
-          {/*  <div className="form-group">
-                  <label htmlFor='file0'>Image</label>
-          <input onChange={getImage} type="file" id='file0' />
-  </div> */}
+          {/* ************** IMAGE **************   defaultValue={post.image}  */}
+          {/* {...register("image")} */}
+          <div className='mb-4'>
+            <label htmlFor='image'>Image</label>
+            <input className="px-3 py-2 focus:outline-none rounded bg-gray-600 text-white w-full" type="file" placeholder="image file" id='image' onChange={getImage} />
+          </div>
 
-          {/* submit field */}
-          <input className="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded mt-2 text-white focus:outline-none disabled:bg-indigo-400" type="submit" value="Save"></input>
+          {/* ************** SUBMIT ************** */}
+          <input className="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded mt-2 text-white focus:outline-none disabled:bg-indigo-400" type="submit" value="Save" />
 
-          {/* <input className="flex justify-start w-20 bg-indigo-600 hover:bg-indigo-500 px-3 py-2 rounded mt-2 text-white focus:outline-none disabled:bg-indigo-400" type="submit" />
-*/}
-
+          {/* ************** CANCEL ************** */}
           <button className="bg-indigo-600 hover:bg-indigo-500 mx-2 px-4 py-2 rounded mt-2 text-white focus:outline-none disabled:bg-indigo-400" onClick={() => {
             setCancleAction(true);
           }}>
@@ -294,8 +463,7 @@ function FormUpdatePost() {
 
         {/*  or output in another component */}
         {/*   <postList post={posts} /> */}
-        {/*  </section > */}
-        {/*     <Sidebar /> */}
+
       </div >
     </div>
 

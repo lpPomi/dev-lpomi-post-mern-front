@@ -43,7 +43,6 @@ function PostList() {
 
 
   useEffect(() => {
-
     getAllPosts();
   }, []);
 

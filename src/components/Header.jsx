@@ -3,6 +3,11 @@ import imgReact from '../assets/images/react.svg';
 import { NavLink } from "react-router-dom";
 
 function Header() {
+
+
+  function refreshPage() {
+    window.location.reload(false);
+  }
   return (
 
     <header>
@@ -26,15 +31,12 @@ function Header() {
               <NavLink to="/create">Create</NavLink>
             </div>
 
-            <div className="bg-green-500 text-sm px-2 py-1 rounded-sm shadow-md shadow-black">
-              <NavLink to="/">More</NavLink>
+            <div>
+              <button className="bg-green-500 text-sm px-2 py-1 rounded-sm shadow-md shadow-black" onClick={refreshPage}>F5</button>
             </div>
 
           </div>
-
-
         </nav>
-
 
       </div>
     </header>
