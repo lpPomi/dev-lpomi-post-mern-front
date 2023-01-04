@@ -63,7 +63,7 @@ export const FormCreatePost1 = () => {
   };
 
 
-  // save all inputs from the form in the data object
+  // save all inputs from the form in the postObj object
   const onSubmit = postObj => {
     // aquivalent to function createPost(postObj) {
 

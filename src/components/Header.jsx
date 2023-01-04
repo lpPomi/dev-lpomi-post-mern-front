@@ -8,6 +8,8 @@ function Header() {
   function refreshPage() {
     window.location.reload(false);
   }
+
+
   return (
 
     <header>
